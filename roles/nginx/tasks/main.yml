@@ -1,2 +1,75 @@
 ---
+- name: Install Nginx
+  ansible.builtin.include_role:
+    name: nginxinc.nginx
+
+- name: Ensure directories
+  block:
+    - name: Ensure the sites directory exists
+      ansible.builtin.file:
+        path: "{{ nginx_sites_path }}"
+        state: directory
+        mode: "0755"
+
+    - name: Ensure the certificates directory exists
+      ansible.builtin.file:
+        path: "{{ nginx_ssl_path }}"
+        state: directory
+        mode: "0700"
+
+- name: Generate self-signed certificate
+  block:
+    - name: Generate the default key
+      community.crypto.openssl_privatekey:
+        path: "{{ nginx_ssl_default_key }}"
+        size: 4096
+        mode: "0600"
+        type: RSA
+        state: present
+
+    - name: Create certificate signing request (CSR) for default certificate
+      community.crypto.openssl_csr_pipe:
+        privatekey_path: "{{ nginx_ssl_default_key }}"
+        common_name: _
+        organization_name: Visiosto oy
+      register: csr
+
+    - name: Generate a self-signed SSL/TLS certificate (valid for 10 years)
+      community.crypto.x509_certificate:
+        path: "{{ nginx_ssl_default_certificate }}"
+        privatekey_path: "{{ nginx_ssl_default_key }}"
+        csr_content: "{{ csr.csr }}"
+        provider: selfsigned
+        selfsigned_not_after: "+3650d"
+        mode: "0644"
+
+- name: Create the Nginx configuration
+  block:
+    - name: Create the Nginx configuration
+      ansible.builtin.copy:
+        src: "files/nginx.conf"
+        dest: "{{ nginx_path }}/nginx.conf"
+        mode: "0644"
+      notify: (Handler) Run NGINX
+
+    - name: Create the MIME types
+      ansible.builtin.copy:
+        src: "files/mime.types"
+        dest: "{{ nginx_path }}/mime.types"
+        mode: "0644"
+      notify: (Handler) Run NGINX
+
+    - name: Copy the configuration snippets
+      ansible.builtin.copy:
+        src: files/snippets
+        dest: "{{ nginx_path }}"
+        mode: "0755"
+      notify: (Handler) Run NGINX
+
+    - name: Copy the default site
+      ansible.builtin.copy:
+        src: "files/conf.d/default.conf"
+        dest: "{{ nginx_sites_path }}"
+        mode: "0755"
+      notify: (Handler) Run NGINX
 # vi: ft=yaml.ansible
