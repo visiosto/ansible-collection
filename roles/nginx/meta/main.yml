@@ -1,7 +1,8 @@
 ---
 galaxy_info:
   author: visiosto
-  description: Ansible role for setting up Nginx with a sensible default configuration
+  description:
+    Ansible role for setting up Nginx with a sensible default configuration
   role_name: nginx
   license: MIT
   min_ansible_version: "2.18"
