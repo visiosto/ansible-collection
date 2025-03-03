@@ -1,0 +1,15 @@
+namespace: visiosto
+name: common
+version: 0.1.0
+readme: README.md
+authors:
+  - Visiosto oy <visiosto@visiosto.fi> (https://www.visiosto.fi)
+description: Shared resources for Ansible playbooks
+license:
+  - MIT
+dependencies: {}
+repository: https://github.com/visiosto/visiosto.common.git
+documentation: https://github.com/visiosto/visiosto.common
+homepage: https://github.com/visiosto/visiosto.common
+issues: https://github.com/visiosto/visiosto.common/issues
+build_ignore: []
