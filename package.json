@@ -1,0 +1,13 @@
+{
+  "name": "ansible-collection",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write \"**/*.{conf,json,md,types}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "prettier-plugin-nginx": "^1.0.3",
+    "prettier-plugin-packagejson": "^2.5.10"
+  }
+}
