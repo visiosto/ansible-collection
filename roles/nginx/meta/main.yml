@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  author: visiosto
+  description: Ansible role for setting up Nginx with a sensible default configuration
+  role_name: nginx
+  license: MIT
+  min_ansible_version: "2.18"
+
+dependencies:
+  - name: nginxinc.nginx
+    src: nginxinc.nginx
+    version: 0.25.0
+# vi: ft=yaml.ansible
