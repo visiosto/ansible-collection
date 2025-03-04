@@ -1,0 +1,4 @@
+---
+ignore: |
+  .ansible
+  node_modules
