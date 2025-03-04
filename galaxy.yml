@@ -7,7 +7,8 @@ authors:
 description: Shared resources for Ansible playbooks
 license:
   - MIT
-dependencies: {}
+dependencies:
+  devsec.hardening: ">=10.3.0,<11.0.0"
 repository: https://github.com/visiosto/visiosto.common.git
 documentation: https://github.com/visiosto/visiosto.common
 homepage: https://github.com/visiosto/visiosto.common
