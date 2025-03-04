@@ -1,0 +1,65 @@
+---
+name: Lint
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ansible:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone the source code
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          ansible-galaxy install -r requirements.yml
+
+      - name: Lint Ansible
+        run: ansible-lint .
+
+      - name: Lint YAML
+        run: yamllint .
+
+  nginx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone the source code
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Generate a certficate to silence errors
+        run: |
+          mkdir -p ${GITHUB_WORKSPACE}/files/certs
+          openssl req -new -newkey rsa:4096 -x509 -days 365 \
+          -keyout ${GITHUB_WORKSPACE}/files/certs/default.key \
+          -out ${GITHUB_WORKSPACE}/files/certs/default.crt -nodes \
+          -subj "/CN=localhost"
+
+      - name: Install Gixy
+        run: pip install gixy-ng
+
+      - name: Run Gixy
+        run: gixy files/nginx.conf
+
+      - name: Check the Nginx configuration
+        run: |
+          sudo rm -rf /etc/nginx
+          sudo cp -R "${GITHUB_WORKSPACE}/roles/nginx/files" /etc/nginx/
+          sudo nginx -t
