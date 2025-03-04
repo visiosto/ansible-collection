@@ -46,17 +46,17 @@ jobs:
 
       - name: Generate a certficate to silence errors
         run: |
-          mkdir -p ${GITHUB_WORKSPACE}/files/certs
+          mkdir -p ${GITHUB_WORKSPACE}/roles/nginx/files/certs
           openssl req -new -newkey rsa:4096 -x509 -days 365 \
-          -keyout ${GITHUB_WORKSPACE}/files/certs/default.key \
-          -out ${GITHUB_WORKSPACE}/files/certs/default.crt -nodes \
+          -keyout ${GITHUB_WORKSPACE}/roles/nginx/files/certs/default.key \
+          -out ${GITHUB_WORKSPACE}/roles/nginx/files/certs/default.crt -nodes \
           -subj "/CN=localhost"
 
       - name: Install Gixy
         run: pip install gixy-ng
 
       - name: Run Gixy
-        run: gixy files/nginx.conf
+        run: gixy roles/nginx/files/nginx.conf
 
       - name: Check the Nginx configuration
         run: |
