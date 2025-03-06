@@ -1,0 +1,18 @@
+---
+- name: Ensure that the necessary variables are defined
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Ensure the playbook variable is defined
+      ansible.builtin.fail:
+        msg:
+          Playbook name missing. Pass the name of the playbook that imports the
+          `variables` play with the `playbook` variable.
+      when: playbook is not defined
+    - name: Ensure the environment is defined
+      ansible.builtin.fail:
+        msg:
+          'Environment missing. Use `-e` to define `env`: ansible-playbook {{
+          playbook }} -e "env=<environment>"'
+      when: env is not defined
+# vi: ft=yaml.ansible
