@@ -1,0 +1,53 @@
+---
+- name: Assert the `users` variable is defined
+  ansible.builtin.assert:
+    that:
+      - users is defined
+      - users | ansible.builtin.type_debug == 'list'
+      - users | length > 0
+    fail_msg:
+      The variable `users` must be defined as a list of users to create and it
+      must not be empty.
+
+- name: Assert that the `users` has valid names
+  ansible.builtin.assert:
+    that:
+      - item.name is defined
+      - item.name | trim != ''
+    fail_msg: Each user in the `users` sequence must have a non-empty name.
+  loop: "{{ users }}"
+
+- name: Assert that the `users` has keys
+  ansible.builtin.assert:
+    that:
+      - item.keys is defined and item.keys is iterable and item.keys is sequence
+        and item.keys is not mapping
+      - item.keys | reject('equalto', '') | list | length == item.keys | length
+      - item.keys | reject('equalto', None) | list | length == item.keys |
+        length
+      - item.keys | reject('match', '^\s*$') | list | length == item.keys |
+        length
+    fail_msg: Each user in the `users` sequence must have a non-empty name.
+  loop: "{{ users }}"
+
+- name: Assert that the `users` has groups
+  ansible.builtin.assert:
+    that:
+      - item.groups is defined and item.groups is iterable and item.groups is
+        sequence and item.groups is not mapping
+      - item.groups | reject('equalto', '') | list | length == item.groups |
+        length
+      - item.groups | reject('equalto', None) | list | length == item.groups |
+        length
+      - item.groups | reject('match', '^\s*$') | list | length == item.groups |
+        length
+    fail_msg: Each user in the `users` sequence must have at least one group.
+  loop: "{{ users }}"
+
+- name: Ensure the `admin_user` is defined and is present in `users`
+  ansible.builtin.assert:
+    that:
+      - admin_user is defined
+      - (users | selectattr('name', 'equalto', admin_user) | list | length) > 0
+    fail_msg: The specified `admin_user` is not present in the `users` list.
+# vi: ft=yaml.ansible

@@ -1,0 +1,33 @@
+---
+- name: Fail if root login will be disabled but `admin_user` cannot connect
+  ansible.builtin.fail:
+    msg:
+      "The admin_user `{{ admin_user }}` is unable to connect to the server. To
+      prevent you from losing access to your server, the playbook has halted
+      before disabling root login. Ensure that the admin_user appears in your
+      `users` hash with a valid entry for `keys`."
+  when: not cli_ask_pass | default(false) and ansible_user == 'root'
+
+- name: Pause to confirm that the user can connect to the server
+  when: cli_ask_pass | default(false)
+  block:
+    - name: Confirm that a non-root user can connect
+      ansible.builtin.pause:
+        prompt: |
+          The play will disable SSH login for `root` but you have set `{{ admin_user }}` as the admin_user.
+
+          Be careful to avoid losing SSH access to your server. Continue only if a different user will be able to connect and invoke sudo.
+
+          (press RETURN to continue or CTRL+C to abort)
+      when: ansible_user == 'root'
+
+    - name: Confirm disabling of SSH password authentication
+      ansible.builtin.pause:
+        prompt: |
+          The play will disable password login but the admin_user named `{{ admin_user }}` appears unable to connect via SSH key.
+
+          Be careful to avoid losing SSH access to your server. Continue only if you are certain you will have another means of connecting.
+
+          (press RETURN to continue or CTRL+C to abort)
+
+# vi: ft=yaml.ansible

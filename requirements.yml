@@ -5,3 +5,5 @@ collections:
 roles:
   - name: nginxinc.nginx
     version: 0.25.0
+  - name: geerlingguy.ntp
+    version: 2.7.0

@@ -1,0 +1,3 @@
+---
+os_timezone: Etc/UTC
+# vi: ft=yaml.ansible

@@ -1,0 +1,15 @@
+---
+- name: Run the user tasks
+  ansible.builtin.include_tasks: users.yml
+
+- name: Apply the OS security configuration
+  ansible.builtin.include_role:
+    name: devsec.hardening.os_hardening
+
+- name: Set up NTP
+  ansible.builtin.include_role:
+    name: geerlingguy.ntp
+  vars:
+    ntp_timezone: "{{ os_timezone }}"
+    ntp_manage_config: true
+# vi: ft=yaml.ansible
