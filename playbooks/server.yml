@@ -1,0 +1,26 @@
+---
+- name: Check variables
+  ansible.builtin.import_playbook: visiosto.common.variables
+  vars:
+    playbook: "{{ playbook }}"
+
+- name: Test connection and determine the user
+  hosts: "{{ target_host_group }}:&{{ env }}"
+  gather_facts: false
+  roles:
+    - role: visiosto.common.connection
+      tags:
+        - connection
+        - always
+
+- name: Set up server
+  hosts: "{{ target_host_group }}:&{{ env }}"
+  become: true
+  vars:
+    ntp_timezone: Etc/UTC
+    ntp_manage_config: true
+  roles:
+    - role: visiosto.common.os
+      tags:
+        - os
+# vi: ft=yaml.ansible

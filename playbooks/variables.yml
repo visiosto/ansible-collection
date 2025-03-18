@@ -9,6 +9,14 @@
           Playbook name missing. Pass the name of the playbook that imports the
           `variables` play with the `playbook` variable.
       when: playbook is not defined
+
+    - name: Ensure the target host variable is defined
+      ansible.builtin.fail:
+        msg:
+          Target host name missing. Pass the name of the host group you want to
+          use to the playbook as the `target_host` variable.
+        when: target_host is not defined
+
     - name: Ensure the environment is defined
       ansible.builtin.fail:
         msg:

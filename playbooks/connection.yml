@@ -1,0 +1,15 @@
+---
+- name: Check variables
+  ansible.builtin.import_playbook: visiosto.common.variables
+  vars:
+    playbook: connection.yml
+
+- name: Test connection and determine the user
+  hosts: "{{ target_host_group }}:&{{ env }}"
+  gather_facts: false
+  roles:
+    - role: connection
+      tags:
+        - connection
+        - always
+# vi: ft=yaml.ansible
