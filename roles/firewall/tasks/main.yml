@@ -1,0 +1,10 @@
+---
+- name: Run UFW tasks
+  ansible.builtin.include_tasks: ufw.yml
+  when: ansible_facts.os_family == "Debian"
+  notify: ufw_reload
+
+- name: Run firewalld tasks
+  ansible.builtin.include_tasks: firewalld.yml
+  when: ansible_facts.os_family == "RedHat"
+  notify: firewalld_reload

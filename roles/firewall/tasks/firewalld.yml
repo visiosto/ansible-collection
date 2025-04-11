@@ -1,0 +1,28 @@
+---
+- name: Ensure the firewalld package is installed
+  ansible.builtin.dnf:
+    name: firewalld
+    state: "{{ firewall_package_state }}"
+    update_cache: true
+
+- name: Ensure firewalld is running and enabled
+  ansible.builtin.systemd:
+    enabled: true
+    name: firewalld
+    state: started
+
+- name: Set default zone to deny incoming traffic
+  ansible.posix.firewalld:
+    immediate: true
+    permanent: true
+    state: enabled
+    zone: drop
+
+- name: Allow ports
+  ansible.posix.firewalld:
+    immediate: true
+    permanent: true
+    port: "{{ item.key }}/{{ item.value }}"
+    state: enabled
+    zone: public
+  loop: "{{ allowed_ports }}"

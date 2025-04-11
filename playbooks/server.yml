@@ -23,3 +23,6 @@
     - role: visiosto.common.os
       tags:
         - os
+    - role: visiosto.common.firewall
+      tags:
+        - firewall

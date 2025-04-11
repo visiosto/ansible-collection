@@ -1,0 +1,8 @@
+---
+firewall_allowed_ports:
+  22: tcp
+  80: tcp
+  443: tcp
+
+firewall_package_state: latest
+firewall_package_cache_valid_time: 3600
